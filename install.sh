@@ -24,9 +24,15 @@ kvm-ok
 sleep 3
 echo
 
+echo "[Installing uvtool]"
+echo "==================="
+sudo apt -y install uvtool
+echo
+sleep 2
+
 echo "[Downloading cloud image]"
 echo "========================"
 echo "{RELEASE=XENIAL (UBUNTU 16.04LTS)}"
 sleep 2
-uvt-simplestreams-libvirt sync release=xenial arch=amd64
+sudo uvt-simplestreams-libvirt sync release=xenial arch=amd64
 echo
