@@ -4,24 +4,33 @@
 #include <stdlib.h>
 #include <libvirt/libvirt.h>
 
+struct hst_cn {
+    virConnectPtr host_connection;
+} hst_cn;
+
+
 int main(int argc, char *argv[]) {
 
-    //host connection pointer
-    virConnectPtr host_connection;
-
-    host_connection = virConnectOpen("qemu:///system");
-    if (host_connection == NULL) {
-        fprintf(stderr, "Host Connection KVM/Qemu failed\n");
-        return 1;
-        }
-    else {
-        printf("Host connection [KVM/QEMU] established\n");
+    //connect to host
+    hst_cn.host_connection = virConnectOpen("qemu:///system");
+    if (hst_cn.host_connection == NULL) {
+        fprintf(stderr, "Host connection KVM/Qemu failed!!!\n");
+        return 0;
     }
+    else {
+        printf("Host Connection: [KVM/Qemu] established\n");
 
-    //close connection
-    virConnectClose(host_connection);
-    host_connection = NULL;
-    return 0;
+    }
+    //query vm stats here
+    //
+    //
+    //
+    printf("Closing Host KVM/Qemu connection\n");
+    virConnectClose(hst_cn.host_connection);
+    return 1;
 }
+
+
+
 
 
