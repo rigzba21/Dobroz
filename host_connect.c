@@ -27,6 +27,7 @@ struct hst_cn {
      unsigned int threads
      */
     virNodeInfo host_node_info;
+    unsigned int encryp_status;
 } hst_cn;
 
 
@@ -72,8 +73,13 @@ int main(int argc, char *argv[]) {
     fprintf(stdout, "[CPU Cores/Socket:] %u\n", hst_cn.host_node_info.cores);
     fprintf(stdout, "[CPU Threads/Core:] %u\n" TXTRST, hst_cn.host_node_info.threads);
     printf(CYAN "=========================================\n" TXTRST);
+    printf(CYAN "[SECURITY DETAILS:]\n"TXTRST);
+    printf(CYAN "=========================================\n" TXTRST);
 
-    //query vm stats here
+    hst_cn.encryp_status = virConnectIsEncrypted(hst_cn.host_connection);
+    fprintf(stdout, CYAN "[Secure Connection Status ([*1] Encrypted; [*0] Plaintext):] %u\n", hst_cn.encryp_status);
+
+       //query vm stats here
     //
     //
     //
