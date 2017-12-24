@@ -36,7 +36,10 @@ struct hst_cn {
 struct domains {
     int i;
     int total_domains;
+    int num_active, num_non_active;
     int *active_domains;
+    char **non_active_domains;
+    virDomainPtr *all_domains;
 } domains;
 
 //ncurses helper functions
@@ -151,7 +154,6 @@ int main(int argc, char *argv[]) {
     ncurses_color_off();
     ncurses_continue();
 
-
     //query vm stats here
     //query # of vm(domains)
     ncurses_color_on();
@@ -161,22 +163,30 @@ int main(int argc, char *argv[]) {
     bold_off();
     print_bars();
 
-    domains.total_domains = virConnectNumOfDomains(hst_cn.host_connection);
-    printw("[Total Number of VMs:] %d\n", domains.total_domains);
+    domains.total_domains = 0;
+    domains.num_active = virConnectNumOfDomains(hst_cn.host_connection);
+    domains.num_non_active = virConnectNumOfDefinedDomains(hst_cn.host_connection);
+    domains.all_domains = malloc(sizeof(virDomainPtr) * (domains.num_active + domains.num_non_active));
+    domains.non_active_domains = malloc(sizeof(char *) * domains.num_non_active);
+    domains.active_domains = malloc(sizeof(int) * domains.num_active);
 
-    domains.active_domains = malloc(sizeof(int) * domains.total_domains);
-    domains.total_domains = virConnectListDomains(hst_cn.host_connection, domains.active_domains, domains.total_domains);
+    domains.num_active = virConnectListDomains(hst_cn.host_connection, domains.active_domains, domains.num_active);
+    domains.num_non_active = virConnectListDefinedDomains(hst_cn.host_connection, domains.non_active_domains, domains.num_non_active);
+
+   // printw("[Total Number of VMs:] %d\n", domains.total_domains);
+
+
     printw("[Active VM Ids:]\n");
 
-    for (domains.i = 0; domains.i < domains.total_domains; domains.i++) {
+    for (domains.i = 0; domains.i < domains.num_active; domains.i++) {
+        domains.all_domains[domains.total_domains] = virDomainLookupByID(hst_cn.host_connection, domains.active_domains[domains.i]);
         printw("|*|[VM ID:] %d|*|\n", domains.active_domains[domains.i]);
+        domains.total_domains++;
     }
     free(domains.active_domains);
+    free(domains.non_active_domains);
     ncurses_color_off();
     ncurses_continue();
-
-
-
     //
     //
     ncurses_color_on();
