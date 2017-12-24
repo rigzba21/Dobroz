@@ -40,6 +40,16 @@ struct domains {
     virDomainPtr *all_domains;
 } domains;
 
+//Domain Stats
+struct dom_stats {
+    virTypedParameterPtr params;
+    virDomainInfoPtr dom_info;
+    unsigned int nparams;
+    int start_cpu;
+    unsigned int ncpus;
+    unsigned int flags;
+} dom_stats;
+
 //ncurses helper functions
 void ncurses_init_func() {
     initscr();
@@ -153,8 +163,7 @@ int main(int argc, char *argv[]) {
     ncurses_color_off();
     ncurses_continue();
 
-    //query vm stats here
-    //query # of vm(domains)
+    //-------------VM (DOMAIN) STATS-----------------------------------------------------------------------------------//
 
     ncurses_color_on();
     print_bars();
@@ -162,7 +171,7 @@ int main(int argc, char *argv[]) {
     printw("[VIRTUAL MACHINE STATS:]\n");
     bold_off();
     print_bars();
-
+    //------------Initialize Domain Objects---------------------------------------------------------------------------//
     domains.total_domains = 0;
     domains.num_active = virConnectNumOfDomains(hst_cn.host_connection);
     domains.num_non_active = virConnectNumOfDefinedDomains(hst_cn.host_connection);
@@ -176,15 +185,20 @@ int main(int argc, char *argv[]) {
     printw("[Active VM Ids:]\n");
     bold_off();
 
+
+    //iterate through active domains
     for (domains.i = 0; domains.i < domains.num_active; domains.i++) {
         domains.all_domains[domains.total_domains] = virDomainLookupByID(hst_cn.host_connection, domains.active_domains[domains.i]);
         printw("|*|[VM ID:] %d|*|\n", domains.active_domains[domains.i]);
+        printw("|*|[->CPU Time:] %llu|*|\n", virDomainGetInfo(domains.all_domains[domains.total_domains], dom_stats.dom_info));
         domains.total_domains++;
     }
     free(domains.active_domains);
     free(domains.non_active_domains);
     ncurses_color_off();
     ncurses_continue();
+
+
     //
     //
     ncurses_color_on();
