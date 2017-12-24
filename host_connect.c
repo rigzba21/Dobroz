@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <ncurses.h>
 #include <libvirt/libvirt.h>
 
 //Text Color Definitions (ANSI escape)
@@ -47,28 +48,41 @@ int main(int argc, char *argv[]) {
         return 0;
     }
     else {
-        printf(CYAN "========================================\n" TXTRST);
-        printf(CYAN "Host Connection: [KVM/Qemu] established\n" TXTRST);
-        printf(CYAN "========================================\n" TXTRST);
-
+        initscr();
+        start_color();
+        init_pair(1, COLOR_CYAN, COLOR_BLACK);
+        attron(COLOR_PAIR(1));
+        printw("========================================\n");
+        printw("Host Connection: [KVM/Qemu] established\n");
+        printw("========================================\n");
+        attroff(COLOR_PAIR(1));
+        refresh();
+        getch();
+       // endwin();
     }
     //query hostname
     hst_cn.host_sys = virConnectGetHostname(hst_cn.host_connection);
-    fprintf(stdout, CYAN "[HOST]: %s\n" TXTRST, hst_cn.host_sys);
-    printf(CYAN "=========================================\n" TXTRST);
+    attron(COLOR_PAIR(1));
+    printw("[HOST]: %s\n", hst_cn.host_sys);
+    printw("=========================================\n");
     free (hst_cn.host_sys);
+    refresh();
+    getch();
+
 
     //query available VirtualCPUs
     hst_cn.v_cpus = virConnectGetMaxVcpus(hst_cn.host_connection, NULL);
-    fprintf(stdout, CYAN "[VCPUS]: %d\n" TXTRST, hst_cn.v_cpus);
-    printf(CYAN "=========================================\n" TXTRST);
+    printw("[VCPUS]: %d\n", hst_cn.v_cpus);
+    printw("=========================================\n");
 
     //query available memory
     hst_cn.free_mem = virNodeGetFreeMemory(hst_cn.host_connection);
-    fprintf(stdout, CYAN "[MEMORY]: %llu\n" TXTRST, hst_cn.free_mem);
-    printf(CYAN "=========================================\n" TXTRST);
-    printf(CYAN "=========================================\n" TXTRST);
-    printf("\n");
+    printw("[MEMORY]: %llu\n", hst_cn.free_mem);
+    printw("=========================================\n");
+    printw("=========================================\n");
+    refresh();
+    getchar();
+    endwin();
 
     //query detailed host info
     printf(CYAN "=========================================\n" TXTRST);
@@ -109,18 +123,19 @@ int main(int argc, char *argv[]) {
     printf(CYAN "[Active VM Ids:]\n" TXTRST);
 
     for (domains.i = 0; domains.i < domains.total_domains; domains.i++) {
-        fprintf(stdout, CYAN "|*|[VM ID:] %d|*|\n" TXTRST, domains.active_domains[domains.i]);
+        fprintf(stdout, CYAN "\r|*|[VM ID:] %d|*|\n" TXTRST, domains.active_domains[domains.i]);
     }
     free(domains.active_domains);
 
 
     //
     //
-    //
+
     printf(CYAN "=========================================\n" TXTRST);
     printf(CYAN "[Closing Host KVM/Qemu connection]\n" TXTRST);
     virConnectClose(hst_cn.host_connection);
     printf(CYAN "=========================================\n" TXTRST);
+
     return 1;
 }
 

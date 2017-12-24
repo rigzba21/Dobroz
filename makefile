@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-lvirt -fstack-protector
+CFLAGS=-lvirt -lncurses -fstack-protector
 
 host_connect : host_connect.o
 	$(CC) -o host_connect host_connect.c $(CFLAGS)
