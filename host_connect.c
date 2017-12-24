@@ -107,15 +107,20 @@ int main(int argc, char *argv[]) {
     domains.active_domains = malloc(sizeof(int) * domains.total_domains);
     domains.total_domains = virConnectListDomains(hst_cn.host_connection, domains.active_domains, domains.total_domains);
     printf(CYAN "[Active VM Ids:]\n" TXTRST);
+
     for (domains.i = 0; domains.i < domains.total_domains; domains.i++) {
-        fprintf(stdout, CYAN "[VM ID:] %d\n" TXTRST, domains.active_domains[domains.i]);
+        fprintf(stdout, CYAN "|*|[VM ID:] %d|*|\n" TXTRST, domains.active_domains[domains.i]);
     }
     free(domains.active_domains);
+
+
     //
     //
     //
+    printf(CYAN "=========================================\n" TXTRST);
     printf(CYAN "[Closing Host KVM/Qemu connection]\n" TXTRST);
     virConnectClose(hst_cn.host_connection);
+    printf(CYAN "=========================================\n" TXTRST);
     return 1;
 }
 
