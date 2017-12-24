@@ -1,38 +1,36 @@
-/*compile w/ gcc -g -Wall host_connection.c -o ex -lvirt */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <ncurses.h>
 #include <libvirt/libvirt.h>
 
-//Text Color Definitions (ANSI escape)
-#define CYAN "\x1B[36m"
-#define TXTRST "\x1B[0m"
 
-
-//struct w/HostConnector
+//HostConnector
 struct hst_cn {
     virConnectPtr host_connection;
     char *host_sys;
     int v_cpus;
     unsigned long long free_mem;
+    virNodeInfo host_node_info;
     //nodeinfo struct contains:
     /*
-     char model[]  CPU Model
-     unsigned long memory
-     unsigned int cpus
-     unsigned int mhz
-     unsigned int nodes
-     unsigned int sockets
-     unsigned int cores
-     unsigned int threads
-     */
-    virNodeInfo host_node_info;
+        -> char model[]  CPU Model
+        -> unsigned long memory
+        -> unsigned int cpus
+        -> unsigned int mhz
+        -> unsigned int nodes
+        ->unsigned int sockets
+        ->unsigned int cores
+        ->unsigned int threads
+                */
     unsigned int encryp_status;
-    //struct contains model and doi
     virSecurityModel sec_model;
+    // security model struct contains:
+    // ->model
+    // ->DOI
 } hst_cn;
 
+//Domains
 struct domains {
     int i;
     int total_domains;
@@ -47,6 +45,7 @@ void ncurses_init_func() {
     initscr();
     start_color();
     init_pair(1, COLOR_CYAN, COLOR_BLACK);
+    scrollok(stdscr, TRUE);
 }
 
 void ncurses_color_on() {
@@ -66,10 +65,10 @@ void bold_off() {
 }
 
 void ncurses_continue() {
+    printw("Press <ENTER> To Continue");
     refresh();
     getch();
 }
-
 
 void print_bars() {
  printw("========================================\n");
@@ -156,6 +155,7 @@ int main(int argc, char *argv[]) {
 
     //query vm stats here
     //query # of vm(domains)
+
     ncurses_color_on();
     print_bars();
     bold_on();
@@ -172,11 +172,9 @@ int main(int argc, char *argv[]) {
 
     domains.num_active = virConnectListDomains(hst_cn.host_connection, domains.active_domains, domains.num_active);
     domains.num_non_active = virConnectListDefinedDomains(hst_cn.host_connection, domains.non_active_domains, domains.num_non_active);
-
-   // printw("[Total Number of VMs:] %d\n", domains.total_domains);
-
-
+    bold_on();
     printw("[Active VM Ids:]\n");
+    bold_off();
 
     for (domains.i = 0; domains.i < domains.num_active; domains.i++) {
         domains.all_domains[domains.total_domains] = virDomainLookupByID(hst_cn.host_connection, domains.active_domains[domains.i]);
