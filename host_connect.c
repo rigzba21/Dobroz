@@ -39,6 +39,39 @@ struct domains {
     int *active_domains;
 } domains;
 
+//ncurses helper functions
+void ncurses_init_func() {
+    initscr();
+    start_color();
+    init_pair(1, COLOR_CYAN, COLOR_BLACK);
+}
+
+void ncurses_color_on() {
+    attron(COLOR_PAIR(1));
+}
+
+void ncurses_color_off() {
+    attroff(COLOR_PAIR(1));
+}
+
+void bold_on() {
+    attron(A_BOLD);
+}
+
+void bold_off() {
+    attroff(A_BOLD);
+}
+
+void ncurses_continue() {
+    refresh();
+    getch();
+}
+
+
+void print_bars() {
+ printw("========================================\n");
+}
+
 int main(int argc, char *argv[]) {
 
     //connect to host
@@ -48,93 +81,114 @@ int main(int argc, char *argv[]) {
         return 0;
     }
     else {
-        initscr();
-        start_color();
-        init_pair(1, COLOR_CYAN, COLOR_BLACK);
-        attron(COLOR_PAIR(1));
-        printw("========================================\n");
-        printw("Host Connection: [KVM/Qemu] established\n");
-        printw("========================================\n");
-        attroff(COLOR_PAIR(1));
-        refresh();
-        getch();
-       // endwin();
+        ncurses_init_func();
+        ncurses_color_on();
+        print_bars();
+        bold_on();
+        printw("HOST CONNECTION: [KVM/Qemu] ESTABLISHED\n");
+        bold_off();
+        print_bars();
+        ncurses_color_off();
+        ncurses_continue();
     }
     //query hostname
     hst_cn.host_sys = virConnectGetHostname(hst_cn.host_connection);
-    attron(COLOR_PAIR(1));
+    ncurses_color_on();
     printw("[HOST]: %s\n", hst_cn.host_sys);
-    printw("=========================================\n");
+    print_bars();
     free (hst_cn.host_sys);
-    refresh();
-    getch();
+    ncurses_color_off();
+    ncurses_continue();
 
 
     //query available VirtualCPUs
     hst_cn.v_cpus = virConnectGetMaxVcpus(hst_cn.host_connection, NULL);
+    ncurses_color_on();
     printw("[VCPUS]: %d\n", hst_cn.v_cpus);
-    printw("=========================================\n");
+    print_bars();
 
     //query available memory
     hst_cn.free_mem = virNodeGetFreeMemory(hst_cn.host_connection);
     printw("[MEMORY]: %llu\n", hst_cn.free_mem);
-    printw("=========================================\n");
-    printw("=========================================\n");
-    refresh();
-    getchar();
-    endwin();
+    print_bars();
+    print_bars();
+    ncurses_color_off();
+    ncurses_continue();
+
 
     //query detailed host info
-    printf(CYAN "=========================================\n" TXTRST);
-    printf(CYAN "[DETAILED HOST STATS:]\n");
-    printf(CYAN "=========================================\n" TXTRST);
+    ncurses_color_on();
+    print_bars();
+    bold_on();
+    printw("[DETAILED HOST STATS:]\n");
+    bold_off();
+    print_bars();
     virNodeGetInfo(hst_cn.host_connection, &hst_cn.host_node_info);
-    fprintf(stdout, CYAN "[CPU Model:] %s\n", hst_cn.host_node_info.model);
-    fprintf(stdout, "[MEMORY SIZE:] %lukb\n", hst_cn.host_node_info.memory);
-    fprintf(stdout, "[Active CPUs:] %u\n", hst_cn.host_node_info.cpus);
-    fprintf(stdout, "[CPU Frequency:] %uMhz\n", hst_cn.host_node_info.mhz);
-    fprintf(stdout, "[CPU Sockets per Node:] %u\n", hst_cn.host_node_info.sockets);
-    fprintf(stdout, "[NUMA Nodes ([*1] if Uniform):] %u\n", hst_cn.host_node_info.nodes);
-    fprintf(stdout, "[CPU Cores/Socket:] %u\n", hst_cn.host_node_info.cores);
-    fprintf(stdout, "[CPU Threads/Core:] %u\n" TXTRST, hst_cn.host_node_info.threads);
-    printf(CYAN "=========================================\n" TXTRST);
-    printf(CYAN "[SECURITY DETAILS:]\n"TXTRST);
-    printf(CYAN "=========================================\n" TXTRST);
+    printw("[CPU Model:] %s\n", hst_cn.host_node_info.model);
+    printw("[MEMORY SIZE:] %lukb\n", hst_cn.host_node_info.memory);
+    printw("[Active CPUs:] %u\n", hst_cn.host_node_info.cpus);
+    printw("[CPU Frequency:] %uMhz\n", hst_cn.host_node_info.mhz);
+    printw("[CPU Sockets per Node:] %u\n", hst_cn.host_node_info.sockets);
+    printw("[NUMA Nodes ([*1] if Uniform):] %u\n", hst_cn.host_node_info.nodes);
+    printw("[CPU Cores/Socket:] %u\n", hst_cn.host_node_info.cores);
+    printw("[CPU Threads/Core:] %u\n", hst_cn.host_node_info.threads);
+    print_bars();
+    bold_on();
+    printw("[SECURITY DETAILS:]\n");
+    bold_off();
+    print_bars();
+    ncurses_color_off();
+    ncurses_continue();
 
+    //get security details
     hst_cn.encryp_status = virConnectIsEncrypted(hst_cn.host_connection);
     virNodeGetSecurityModel(hst_cn.host_connection, &hst_cn.sec_model);
-    fprintf(stdout, CYAN "[Secure Connection Status ([*1] Encrypted; [*0] Plaintext):] %u\n", hst_cn.encryp_status);
-    fprintf(stdout, "[Security Model:] %s\n", hst_cn.sec_model.model);
-    fprintf(stdout, "[Security DOI:] %s\n", hst_cn.sec_model.doi);
-    printf(CYAN "=========================================\n" TXTRST);
-    printf("\n");
+    ncurses_color_on();
+    printw("[Secure Connection Status ([*1] Encrypted; [*0] Plaintext):] %u\n", hst_cn.encryp_status);
+    printw("[Security Model:] %s\n", hst_cn.sec_model.model);
+    printw("[Security DOI:] %s\n", hst_cn.sec_model.doi);
+    print_bars();
+    ncurses_color_off();
+    ncurses_continue();
+
 
     //query vm stats here
     //query # of vm(domains)
-    printf(CYAN "=========================================\n" TXTRST);
-    printf(CYAN "[VIRTUAL MACHINE STATS:]\n" TXTRST);
-    printf(CYAN "=========================================\n" TXTRST);
+    ncurses_color_on();
+    print_bars();
+    bold_on();
+    printw("[VIRTUAL MACHINE STATS:]\n");
+    bold_off();
+    print_bars();
 
     domains.total_domains = virConnectNumOfDomains(hst_cn.host_connection);
-    fprintf(stdout, CYAN "[Total Number of VMs:] %d\n", domains.total_domains);
+    printw("[Total Number of VMs:] %d\n", domains.total_domains);
 
     domains.active_domains = malloc(sizeof(int) * domains.total_domains);
     domains.total_domains = virConnectListDomains(hst_cn.host_connection, domains.active_domains, domains.total_domains);
-    printf(CYAN "[Active VM Ids:]\n" TXTRST);
+    printw("[Active VM Ids:]\n");
 
     for (domains.i = 0; domains.i < domains.total_domains; domains.i++) {
-        fprintf(stdout, CYAN "\r|*|[VM ID:] %d|*|\n" TXTRST, domains.active_domains[domains.i]);
+        printw("|*|[VM ID:] %d|*|\n", domains.active_domains[domains.i]);
     }
     free(domains.active_domains);
+    ncurses_color_off();
+    ncurses_continue();
+
 
 
     //
     //
-
-    printf(CYAN "=========================================\n" TXTRST);
-    printf(CYAN "[Closing Host KVM/Qemu connection]\n" TXTRST);
+    ncurses_color_on();
+    print_bars();
+    bold_on();
+    printw("[Closing Host KVM/Qemu connection]\n");
     virConnectClose(hst_cn.host_connection);
-    printf(CYAN "=========================================\n" TXTRST);
+    print_bars();
+    bold_off();
+    ncurses_color_off();
+    ncurses_continue();
+    endwin();
 
     return 1;
 }
