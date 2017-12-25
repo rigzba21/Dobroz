@@ -44,6 +44,10 @@ struct domains {
 struct dom_stats {
     virTypedParameterPtr params;
     virDomainInfoPtr dom_info;
+    virDomainPtr dom;
+    unsigned int stats;
+    virDomainStatsRecordPtr ** retStats;
+    int dom_id;
     unsigned int nparams;
     int start_cpu;
     unsigned int ncpus;
@@ -190,9 +194,10 @@ int main(int argc, char *argv[]) {
     for (domains.i = 0; domains.i < domains.num_active; domains.i++) {
         domains.all_domains[domains.total_domains] = virDomainLookupByID(hst_cn.host_connection, domains.active_domains[domains.i]);
         printw("|*|[VM ID:] %d|*|\n", domains.active_domains[domains.i]);
-        printw("|*|[->CPU Time:] %llu|*|\n", virDomainGetInfo(domains.all_domains[domains.total_domains], dom_stats.dom_info));
         domains.total_domains++;
     }
+    //get individual dom info and store in dom_info struct
+
     free(domains.active_domains);
     free(domains.non_active_domains);
     ncurses_color_off();
