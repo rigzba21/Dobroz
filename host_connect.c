@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <ncurses.h>
 #include <libvirt/libvirt.h>
-
+#include <omp.h>
 
 //HostConnector
 struct hst_cn {
@@ -90,6 +90,7 @@ void print_bars() {
 
 int main(int argc, char *argv[]) {
 
+    omp_set_num_threads(10);
     //connect to host
     hst_cn.host_connection = virConnectOpen("qemu:///system");
     if (hst_cn.host_connection == NULL) {
@@ -108,6 +109,7 @@ int main(int argc, char *argv[]) {
         ncurses_continue();
     }
     //query hostname
+
     hst_cn.host_sys = virConnectGetHostname(hst_cn.host_connection);
     ncurses_color_on();
     printw("[HOST]: %s\n", hst_cn.host_sys);
@@ -191,6 +193,7 @@ int main(int argc, char *argv[]) {
 
 
     //iterate through active domains
+
     for (domains.i = 0; domains.i < domains.num_active; domains.i++) {
         domains.all_domains[domains.total_domains] = virDomainLookupByID(hst_cn.host_connection, domains.active_domains[domains.i]);
         virDomainGetInfo(domains.all_domains[domains.total_domains], &dom_stats.dom_info);//& pointer required
@@ -202,8 +205,11 @@ int main(int argc, char *argv[]) {
         printw("||->[Memory Used:] %llukb||\n", dom_stats.dom_info.memory);
         printw("||->[Max Mem Allowed:] %llukb||\n", dom_stats.dom_info.maxMem);
         printw("||->[VM State:] %u||\n", dom_stats.dom_info.state);
+        printw("THREAD: %d\n", omp_get_thread_num());
         domains.total_domains++;
     }
+
+
     //get individual dom info and store in dom_info struct
 
     free(domains.active_domains);
@@ -215,8 +221,8 @@ int main(int argc, char *argv[]) {
     //
     //
     ncurses_color_on();
-    print_bars();
     bold_on();
+    print_bars();
     printw("[Closing Host KVM/Qemu connection]\n");
     virConnectClose(hst_cn.host_connection);
     print_bars();
