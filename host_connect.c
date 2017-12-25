@@ -43,7 +43,7 @@ struct domains {
 //Domain Stats
 struct dom_stats {
     virTypedParameterPtr params;
-    virDomainInfoPtr dom_info;
+    virDomainInfo dom_info;
     virDomainPtr dom;
     unsigned int stats;
     virDomainStatsRecordPtr ** retStats;
@@ -193,7 +193,15 @@ int main(int argc, char *argv[]) {
     //iterate through active domains
     for (domains.i = 0; domains.i < domains.num_active; domains.i++) {
         domains.all_domains[domains.total_domains] = virDomainLookupByID(hst_cn.host_connection, domains.active_domains[domains.i]);
-        printw("|*|[VM ID:] %d|*|\n", domains.active_domains[domains.i]);
+        virDomainGetInfo(domains.all_domains[domains.total_domains], &dom_stats.dom_info);//& pointer required
+        bold_on();
+        printw("||[VM ID:] %d||\n", domains.active_domains[domains.i]);
+        bold_off();
+        printw("||->[vCPUs:] %d||\n", dom_stats.dom_info.nrVirtCpu);
+        printw("||->[CPU Time:] %llu nanoseconds||\n", dom_stats.dom_info.cpuTime);
+        printw("||->[Memory Used:] %llukb||\n", dom_stats.dom_info.memory);
+        printw("||->[Max Mem Allowed:] %llukb||\n", dom_stats.dom_info.maxMem);
+        printw("||->[VM State:] %u||\n", dom_stats.dom_info.state);
         domains.total_domains++;
     }
     //get individual dom info and store in dom_info struct
