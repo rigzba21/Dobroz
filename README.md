@@ -1,6 +1,6 @@
 DOBROZ
 =========
-A command-line utility for managing local virtual machines and viewing resource statistics.
+A command-line utility for managing local virtual machines, viewing statistics, and resource handling.
 
 Local Environment Installation
 ------------------------------
