@@ -48,6 +48,13 @@ echo "${LB}{RELEASE=XENIAL (UBUNTU 16.04LTS)}${rst}"
 sleep 2
 sudo uvt-simplestreams-libvirt sync release=xenial arch=amd64
 echo
+
+echo "${LB}${BG}[Installing ncurses]${rst}"
+echo "====================================="
+sleep 3
+sudo apt-get install libncurses5-dev libncursesw5-dev
+echo
+
 echo "${LB}${BG}[[Cloud Image Installed]]${rst}"
 echo "=========================="
 echo "Run: 'uvt-kvm create <vm name> ' to create/start .qcow"
