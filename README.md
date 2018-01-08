@@ -17,5 +17,5 @@ TO-DO:
 --------
 1. add XML domain configuration
 2. ncurses menu options
-3. ncurses border
+3. ncurses border/window options
 
