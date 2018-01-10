@@ -252,7 +252,7 @@ int main(int argc, char *argv[]) {
     }
     //----------------print active domains------------------------------------------------------------------//
     bold_on();
-    printw("[Active VM Ids:]\n");
+    printw("[Active VMs:]\n");
     bold_off();
     //iterate through active domains
 
