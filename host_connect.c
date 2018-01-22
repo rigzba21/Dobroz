@@ -4,6 +4,7 @@
 #include <ncurses.h>
 #include <libvirt/libvirt.h>
 #include <omp.h>
+#include <menu.h>
 
 //HostConnector
 struct hst_cn {
