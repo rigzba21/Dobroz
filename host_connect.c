@@ -6,6 +6,14 @@
 #include <omp.h>
 #include <menu.h>
 
+WINDOW *new_window(int h, int w, int win_y, int win_x) {
+	WINDOW *this_window;
+	this_window = newwin(h, w, win_y, win_x);
+	box(this_window, 0, 0);
+	wrefresh(this_window);
+	return this_window;
+}
+
 //HostConnector
 struct hst_cn {
     virConnectPtr host_connection;
@@ -61,6 +69,8 @@ void ncurses_init_func() {
     start_color();
     init_pair(1, COLOR_CYAN, COLOR_BLACK);
     scrollok(stdscr, TRUE);
+    keypad(stdscr, TRUE);
+    cbreak();//added for key input support
 }
 
 void ncurses_color_on() {
@@ -85,11 +95,58 @@ void ncurses_continue() {
     getch();
 }
 
+void window_destroy(WINDOW *this_window) {
+	wrefresh(this_window);
+	delwin(this_window);
+}
+
+
+void get_vm_stats() {
+ for (domains.i = 0; domains.i < domains.num_active; domains.i++) {
+         domains.all_domains[domains.total_domains] = virDomainLookupByID(hst_cn.host_connection,
+                domains.active_domains[domains.i]);
+                virDomainGetInfo(domains.all_domains[domains.total_domains], &dom_stats.dom_info);//& pointer required
+                bold_on();
+                printw("||[VM ID:] %d||\n", domains.active_domains[domains.i]);
+                bold_off();
+                printw("||->[vCPUs:] %d||\n", dom_stats.dom_info.nrVirtCpu);
+                printw("||->[CPU Time:] %llu nanoseconds||\n", dom_stats.dom_info.cpuTime);
+                printw("||->[Memory Used:] %llukb||\n", dom_stats.dom_info.memory);
+                printw("||->[Max Mem Allowed:] %llukb||\n", dom_stats.dom_info.maxMem);
+                printw("||->[VM State:] %u||\n", dom_stats.dom_info.state);
+                printw("THREAD: %d\n", omp_get_thread_num());
+                domains.total_domains++;
+    }
+}
+
+void ncurses_menu(int key_press) {
+
+    printw("Press <1> to Refresh VM Statistics");
+    key_press = getch();
+    if (key_press == 1) {
+	
+        refresh();
+        get_vm_stats();
+    }
+    else {
+        ncurses_continue();
+    }
+}
+
+
 void print_bars() {
  printw("========================================\n");
 }
 
 int main(int argc, char *argv[]) {
+
+    WINDOW *window_inst;
+    int win_x, win_y, w, h;
+
+    h = 10;
+    w = 10;
+    win_y = (LINES - h);
+    win_x = (COLS - w);
 
     omp_set_num_threads(10);
     //connect to host
@@ -257,7 +314,9 @@ int main(int argc, char *argv[]) {
     bold_off();
     //iterate through active domains
 
-    for (domains.i = 0; domains.i < domains.num_active; domains.i++) {
+    int kp = 0;
+
+    /*for (domains.i = 0; domains.i < domains.num_active; domains.i++) {
         domains.all_domains[domains.total_domains] = virDomainLookupByID(hst_cn.host_connection,
                 domains.active_domains[domains.i]);
                 virDomainGetInfo(domains.all_domains[domains.total_domains], &dom_stats.dom_info);//& pointer required
@@ -272,7 +331,12 @@ int main(int argc, char *argv[]) {
                 printw("THREAD: %d\n", omp_get_thread_num());
                 domains.total_domains++;
 
-    }
+    }*/
+    window_inst = new_window(h, w, win_y, win_x);
+    get_vm_stats();
+    ncurses_menu(kp);
+    window_destroy(window_inst);
+    ncurses_continue();
     //free malloc resources
     free(domains.active_domains);
     free(domains.non_active_domains);
