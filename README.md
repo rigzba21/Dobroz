@@ -15,7 +15,7 @@ Run the *install.sh* script to locally install **libvirt**, **uvtool**, **qemu-k
 
 TO-DO:
 --------
-1. add XML domain configuration
-2. ncurses menu options
-3. ncurses border/window options
-
+- [ ] add XML domain configuration
+- [ ] ncurses menu options
+- [ ] ncurses border/window options
+- [ ] refresh display stats
