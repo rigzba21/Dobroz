@@ -21,3 +21,4 @@ TO-DO:
 - [ ] ncurses menu options
 - [ ] ncurses border/window options
 - [ ] refresh display stats
+- [ ] include Rust support?
