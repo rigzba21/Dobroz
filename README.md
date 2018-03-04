@@ -13,6 +13,8 @@ Run the *install.sh* script to locally install **libvirt**, **uvtool**, **qemu-k
 6. ```make clean```
 7. ```./host_connect```
 
+**May require a restart**
+
 TO-DO:
 --------
 - [ ] add XML domain configuration
