@@ -1,0 +1,7 @@
+[package]
+name = "Dobroz"
+version = "0.1.3"
+authors = ["rigzba21"]
+
+[dependencies]
+virt = "0.2.8"

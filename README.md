@@ -19,3 +19,4 @@ TO-DO:
 - [ ] ncurses menu options
 - [ ] ncurses border/window options
 - [ ] refresh display stats
+- [x] added Cargo.toml for virt crate (Rust bindings for libvirt)
