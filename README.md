@@ -13,6 +13,8 @@ Run the *install.sh* script to locally install **libvirt**, **uvtool**, **qemu-k
 6. ```make clean```
 7. ```./host_connect```
 
+**May require a restart**
+
 TO-DO:
 --------
 - [ ] add XML domain configuration
@@ -20,3 +22,4 @@ TO-DO:
 - [ ] ncurses border/window options
 - [ ] refresh display stats
 - [x] added Cargo.toml for virt crate (Rust bindings for libvirt)
+
