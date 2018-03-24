@@ -124,7 +124,7 @@ void ncurses_menu(int key_press) {
     printw("Press <1> to Refresh VM Statistics");
     key_press = getch();
     if (key_press == 1) {
-	
+
         refresh();
         get_vm_stats();
     }
@@ -316,23 +316,9 @@ int main(int argc, char *argv[]) {
 
     int kp = 0;
 
-    /*for (domains.i = 0; domains.i < domains.num_active; domains.i++) {
-        domains.all_domains[domains.total_domains] = virDomainLookupByID(hst_cn.host_connection,
-                domains.active_domains[domains.i]);
-                virDomainGetInfo(domains.all_domains[domains.total_domains], &dom_stats.dom_info);//& pointer required
-                bold_on();
-                printw("||[VM ID:] %d||\n", domains.active_domains[domains.i]);
-                bold_off();
-                printw("||->[vCPUs:] %d||\n", dom_stats.dom_info.nrVirtCpu);
-                printw("||->[CPU Time:] %llu nanoseconds||\n", dom_stats.dom_info.cpuTime);
-                printw("||->[Memory Used:] %llukb||\n", dom_stats.dom_info.memory);
-                printw("||->[Max Mem Allowed:] %llukb||\n", dom_stats.dom_info.maxMem);
-                printw("||->[VM State:] %u||\n", dom_stats.dom_info.state);
-                printw("THREAD: %d\n", omp_get_thread_num());
-                domains.total_domains++;
 
-    }*/
     window_inst = new_window(h, w, win_y, win_x);
+    //TODO create a loop to refresh vm stats func call
     get_vm_stats();
     ncurses_menu(kp);
     window_destroy(window_inst);
