@@ -22,4 +22,4 @@ TO-DO:
 - [ ] ncurses border/window options
 - [ ] refresh display stats
 - [x] added Cargo.toml for virt crate (Rust bindings for libvirt)
-
+- [ ] fix makefile to include cargo changes?
