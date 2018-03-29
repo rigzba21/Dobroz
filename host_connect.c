@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <ncurses.h>
 #include <libvirt/libvirt.h>
-#include <omp.h>
+#include <omp.h> //need to establish critical sections for threads
 #include <menu.h>
 
 WINDOW *new_window(int h, int w, int win_y, int win_x) {
