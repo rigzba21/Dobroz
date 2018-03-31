@@ -319,15 +319,18 @@ int main(int argc, char *argv[]) {
 
     window_inst = new_window(h, w, win_y, win_x);
     //TODO create a loop to refresh vm stats func call
+    for (int i = 0; i < 5; i++) {
     get_vm_stats();
     ncurses_menu(kp);
     window_destroy(window_inst);
     ncurses_continue();
+    }
     //free malloc resources
     free(domains.active_domains);
     free(domains.non_active_domains);
     ncurses_color_off();
     ncurses_continue();
+
 
     ncurses_color_on();
     bold_on();
