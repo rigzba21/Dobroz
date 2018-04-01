@@ -335,7 +335,7 @@ int main(int argc, char *argv[]) {
     ncurses_color_on();
     bold_on();
     print_bars();
-    printw("[Closing Host KVM/Qemu connection]\n");
+    printw("===[Closing Host KVM/Qemu connection]===\n");
 
     if (virConnectClose(hst_cn.host_connection) != -1) {
             virConnectClose(hst_cn.host_connection);

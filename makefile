@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-lvirt -fopenmp -lmenu -lncurses -fstack-protector
+CFLAGS=-Wall -lvirt -fopenmp -lmenu -lncurses -fstack-protector -D_FORTIFY_SOURCE=2
 
 host_connect : host_connect.o
 	$(CC) -o host_connect host_connect.c $(CFLAGS)
