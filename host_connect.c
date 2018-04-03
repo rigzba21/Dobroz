@@ -5,6 +5,9 @@
 #include <libvirt/libvirt.h>
 #include <omp.h> //need to establish critical sections for threads
 #include <menu.h>
+#include <unistd.h>
+
+#define SCREEN_DELAY 50000
 
 WINDOW *new_window(int h, int w, int win_y, int win_x) {
 	WINDOW *this_window;
@@ -100,6 +103,9 @@ void window_destroy(WINDOW *this_window) {
 	delwin(this_window);
 }
 
+void print_top_box() {
+    printw("*------------------------------------*\n");
+}
 
 void get_vm_stats() {
  for (domains.i = 0; domains.i < domains.num_active; domains.i++) {
@@ -107,29 +113,29 @@ void get_vm_stats() {
                 domains.active_domains[domains.i]);
                 virDomainGetInfo(domains.all_domains[domains.total_domains], &dom_stats.dom_info);//& pointer required
                 bold_on();
-                printw("||[VM ID:] %d||\n", domains.active_domains[domains.i]);
+                printw("[VM ID:] %d\n", domains.active_domains[domains.i]);
                 bold_off();
-                printw("||->[vCPUs:] %d||\n", dom_stats.dom_info.nrVirtCpu);
-                printw("||->[CPU Time:] %llu nanoseconds||\n", dom_stats.dom_info.cpuTime);
-                printw("||->[Memory Used:] %llukb||\n", dom_stats.dom_info.memory);
-                printw("||->[Max Mem Allowed:] %llukb||\n", dom_stats.dom_info.maxMem);
-                printw("||->[VM State:] %u||\n", dom_stats.dom_info.state);
+                print_top_box();
+                printw("||->[vCPUs:] %d                          ||\n", dom_stats.dom_info.nrVirtCpu);
+                printw("||->[CPU Time:] %llu nanoseconds ||\n", dom_stats.dom_info.cpuTime);
+                printw("||->[Memory Used:] %llukb            ||\n", dom_stats.dom_info.memory);
+                printw("||->[Max Mem Allowed:] %llukb        ||\n", dom_stats.dom_info.maxMem);
+                printw("||->[VM State:] %u                       ||\n", dom_stats.dom_info.state);
+                print_top_box();
                 printw("THREAD: %d\n", omp_get_thread_num());
                 domains.total_domains++;
     }
 }
 
-void ncurses_menu(int key_press) {
-
-    printw("Press <1> to Refresh VM Statistics");
+int stats_refresh_opt(int key_press) {
+    printw("Press <ENTER> to Refresh VM Stats, otherwise press <ESC>");
     key_press = getch();
-    if (key_press == 1) {
-
-        refresh();
-        get_vm_stats();
+    if (key_press != KEY_ENTER) {
+    return key_press;
     }
     else {
         ncurses_continue();
+        return key_press;
     }
 }
 
@@ -139,14 +145,6 @@ void print_bars() {
 }
 
 int main(int argc, char *argv[]) {
-
-    WINDOW *window_inst;
-    int win_x, win_y, w, h;
-
-    h = 10;
-    w = 10;
-    win_y = (LINES - h);
-    win_x = (COLS - w);
 
     omp_set_num_threads(10);
     //connect to host
@@ -314,16 +312,13 @@ int main(int argc, char *argv[]) {
     bold_off();
     //iterate through active domains
 
-    int kp = 0;
-
-
-    window_inst = new_window(h, w, win_y, win_x);
     //TODO create a loop to refresh vm stats func call
     for (int i = 0; i < 5; i++) {
-    get_vm_stats();
-    ncurses_menu(kp);
-    window_destroy(window_inst);
-    ncurses_continue();
+        clear();
+        get_vm_stats();
+        refresh();
+        usleep(SCREEN_DELAY);
+        ncurses_continue();
     }
     //free malloc resources
     free(domains.active_domains);

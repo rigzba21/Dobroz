@@ -18,8 +18,7 @@ Run the *install.sh* script to locally install **libvirt**, **uvtool**, **qemu-k
 TO-DO:
 --------
 - [ ] add XML domain configuration
-- [ ] ncurses menu options
-- [ ] ncurses border/window options
-- [ ] refresh display stats
+- [ ] gui (QT or JavaFX)
+- [x] refresh display stats
 - [x] added Cargo.toml for virt crate (Rust bindings for libvirt)
 - [ ] fix makefile to include cargo changes?
