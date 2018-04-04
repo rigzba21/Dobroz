@@ -1,4 +1,5 @@
-
+//see makefile for compilation flags
+//
 #include <stdio.h>
 #include <stdlib.h>
 #include <ncurses.h>
