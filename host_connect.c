@@ -105,7 +105,7 @@ void window_destroy(WINDOW *this_window) {
 }
 
 void print_top_box() {
-    printw("*------------------------------------*\n");
+    printw("*----------------------------------------*\n");
 }
 
 void get_vm_stats() {
@@ -119,8 +119,8 @@ void get_vm_stats() {
                 print_top_box();
                 printw("||->[vCPUs:] %d                          ||\n", dom_stats.dom_info.nrVirtCpu);
                 printw("||->[CPU Time:] %llu nanoseconds ||\n", dom_stats.dom_info.cpuTime);
-                printw("||->[Memory Used:] %llukb            ||\n", dom_stats.dom_info.memory);
-                printw("||->[Max Mem Allowed:] %llukb        ||\n", dom_stats.dom_info.maxMem);
+                printw("||->[Memory Used:] %llukb             ||\n", dom_stats.dom_info.memory);
+                printw("||->[Max Mem Allowed:] %llukb         ||\n", dom_stats.dom_info.maxMem);
                 printw("||->[VM State:] %u                       ||\n", dom_stats.dom_info.state);
                 print_top_box();
                 printw("THREAD: %d\n", omp_get_thread_num());
