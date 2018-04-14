@@ -65,6 +65,7 @@ struct dom_stats {
     int start_cpu;
     unsigned int ncpus;
     unsigned int flags;
+
 } dom_stats;
 
 //ncurses helper functions
@@ -321,6 +322,17 @@ int main(int argc, char *argv[]) {
         usleep(SCREEN_DELAY);
         ncurses_continue();
     }
+    //cpuStats **see virDomainGetCPUStats usage
+    dom_stats.dom_id = 1;
+
+    dom_stats.nparams = virDomainGetCPUStats(virDomainLookupByID(hst_cn.host_connection, dom_stats.dom_id), NULL, 0, -1, 1, 0);
+    dom_stats.params = calloc(dom_stats.nparams, sizeof(virTypedParameter));
+    virDomainGetCPUStats(virDomainLookupByID(hst_cn.host_connection, dom_stats.dom_id), dom_stats.params, dom_stats.nparams, -1, 1, 0);
+    dom_stats.ncpus = virDomainGetCPUStats(virDomainLookupByID(hst_cn.host_connection, dom_stats.dom_id), NULL, 0, 0, 0, 0);
+    dom_stats.nparams = virDomainGetCPUStats(virDomainLookupByID(hst_cn.host_connection, dom_stats.dom_id), NULL, 0, 0, 1, 0);
+    dom_stats.params = calloc(dom_stats.ncpus * dom_stats.nparams, sizeof(virTypedParameter));
+    virDomainGetCPUStats(virDomainLookupByID(hst_cn.host_connection, dom_stats.dom_id), dom_stats.params, dom_stats.nparams, 0, dom_stats.ncpus, 0);
+
     //free malloc resources
     free(domains.active_domains);
     free(domains.non_active_domains);
