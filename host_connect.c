@@ -328,10 +328,19 @@ int main(int argc, char *argv[]) {
     dom_stats.dom_id = 1;
 
     //get total stats, start cpu at -1, ncpus 1
-    dom_stats.nparams = virDomainGetCPUStats(virDomainLookupByID(hst_cn.host_connection, dom_stats.dom_id), NULL, 0, -1, 1, 0);
-    dom_stats.params = calloc(dom_stats.nparams, sizeof(virTypedParameter));
-    virDomainGetCPUStats(virDomainLookupByID(hst_cn.host_connection, dom_stats.dom_id), dom_stats.params, dom_stats.nparams, -1, 1, 0);
-   //get per cpu stats
+    if (virDomainGetCPUStats(virDomainLookupByID(hst_cn.host_connection, dom_stats.dom_id), NULL, 0, -1, 1, 0) != -1) {
+        dom_stats.nparams = virDomainGetCPUStats(virDomainLookupByID(hst_cn.host_connection, dom_stats.dom_id), NULL, 0, -1, 1, 0);
+        dom_stats.params = calloc(dom_stats.nparams, sizeof(virTypedParameter));
+        virDomainGetCPUStats(virDomainLookupByID(hst_cn.host_connection, dom_stats.dom_id), dom_stats.params, dom_stats.nparams, -1, 1, 0);
+    }
+    else {
+        printw("Error w/ virDomainGetCPUStats");
+        ncurses_continue();
+        return 0;
+    }
+
+
+        //get per cpu stats
     dom_stats.ncpus = virDomainGetCPUStats(virDomainLookupByID(hst_cn.host_connection, dom_stats.dom_id), NULL, 0, 0, 0, 0);
     dom_stats.nparams = virDomainGetCPUStats(virDomainLookupByID(hst_cn.host_connection, dom_stats.dom_id), NULL, 0, 0, 1, 0);
     dom_stats.params = calloc(dom_stats.ncpus * dom_stats.nparams, sizeof(virTypedParameter));
