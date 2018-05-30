@@ -17,6 +17,7 @@ Run the *install.sh* script to locally install **libvirt**, **uvtool**, **qemu-k
 
 TO-DO:
 --------
+- [ ] Remove ncurses, and switch to a GUI or update to ncurses 6
 - [ ] add XML domain configuration
 - [ ] gui (QT or JavaFX;ncurses keybindings not consistent)
 - [x] refresh display stats
