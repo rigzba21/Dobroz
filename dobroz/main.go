@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"Dobroz/dobroz/actions"
+	"github.com/jon/Dobroz/dobroz/actions"
 )
 
 func main() {

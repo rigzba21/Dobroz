@@ -133,12 +133,12 @@
         <a href="<%= rootPath() %>"><img src="<%= rootPath() %>assets/images/logo.svg" alt=""></a>
       </div>
       <div class="col-md-9 col-sm-9 col-xs-10 titles">
-        <h1><%= t("welcome_greeting") %> [v0.11.1]</h1>
+        <h1><%= t("welcome_greeting") %> </h1>
         <h2>
-          <a href="https://github.com/gobuffalo/buffalo"><i class="fa fa-github" aria-hidden="true"></i> https://github.com/gobuffalo/buffalo</a>
+          <a href="https://github.com/rigzba21/Dobroz/tree/go_buffalo_framework/dobroz"><i class="fa fa-github" aria-hidden="true"></i> Source Code</a>
         </h2>
         <h2 class="documentation">
-          <a href="http://gobuffalo.io/"><i class="fa fa-book" aria-hidden="true"></i> Documentation</a>
+          <a href="https://github.com/rigzba21/Dobroz/wiki"><i class="fa fa-book" aria-hidden="true"></i> Documentation</a>
         </h2>
       </div>
     </div>
@@ -150,22 +150,32 @@
   <div class="col-md-12">
     <div class="subtitle">
       <div class="container">
-        <h3>Defined Routes</h3>
+        <h3>VM Resource Information</h3>
       </div>
     </div>
     <div class="table-responsive">
       <table class="table table-striped">
         <thead>
           <tr text-align="left">
-            <th class="centered">METHOD</th>
-            <th>PATH</th>
-            <th>NAME</th>
-            <th>HANDLER</th>
+            <th class="centered">Virtual Machine Name</th>
+            <th>CPU Utilization</th>
+            <th>Memory Utilization</th>
+            <!--<th>HANDLER</th>-->
           </tr>
         </thead>
         <tbody>
-
-          <%= for (r) in routes { %>
+          <tr>
+            <td class="centered">
+              testName
+            </td>
+            <td class="centered">
+              testCPUStats
+            </td>
+            <td class="centered">
+              testMemStats
+            </td>
+          </tr>
+          <!--<%= for (r) in routes { %>
             <tr>
               <td class="centered">
                 <%= r.Method %>
@@ -182,7 +192,7 @@
               </td>
               <td><code><%= r.HandlerName %></code></td>
             </tr>
-          <% } %>
+          <% } %>  -->
 
         </tbody>
       </table>
