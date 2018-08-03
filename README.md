@@ -9,3 +9,7 @@ for Go applications.
 2. Clone this repo: `git clone https://github.com/rigzba21/Dobroz.git`
 3. `cd dobroz`
 4. Run in development mode: `buffalo dev`
+
+### TODO
+
+1. [ ] RPCs to libvirt classes 
