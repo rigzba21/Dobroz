@@ -12,4 +12,4 @@ for Go applications.
 
 ### TODO
 
-1. [ ] RPCs to libvirt classes 
+1. [ ] RPCs and Stubs to libvirt classes 
